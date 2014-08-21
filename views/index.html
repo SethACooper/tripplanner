@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<select id="hotelSelect"></select>
+<select id="restaurantSelect"></select>
+<select id="thingsToDoSelect"></select>
+
+<script src="/bower_components/jquery/dist/jquery.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script>
+  {% autoescape false %}
+    var hotels = {{ hotels | json }}
+    var thingsToDo = {{ thingsToDo | json }}
+    var restaurants = {{ restaurants | json }}
+  {% endautoescape %}
+
+  var $hotelSelect = $("#hotelSelect");
+
+  hotels.forEach(function(hotel) {
+    $hotelSelect.append("<option>" + hotel.name + "</option>");
+  });
+
+</script>
+
+
+
+{% endblock %}
