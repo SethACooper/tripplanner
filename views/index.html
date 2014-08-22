@@ -1,24 +1,102 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<select id="hotelSelect"></select>
-<select id="restaurantSelect"></select>
-<select id="thingsToDoSelect"></select>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+      <div id="daysContainer"></div>
+      <button class="btn btn-success" id="addDayBtn">Add Day</button>
+    </div>
+    <div class="col-sm-3">
+      <select class="form-control" id="hotelSelect"></select>
+      <button data-select="#hotelSelect" class="addToDay btn">+</button>
+    </div>
+    <div class="col-sm-3">
+      <select class="form-control" id="restaurantSelect"></select>
+      <button data-select="#restaurantSelect" class="addToDay btn">+</button>
+    </div>
+    <div class="col-sm-3">
+      <select class="form-control" id="thingsToDoSelect"></select>
+      <button data-select="#thingsToDoSelect" class="addToDay btn">+</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3 well" id="dayPanel"></div>
+    <div class="col-sm-9"></div>
+  </div>
+</div>
+
+
+
+
 
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
 <script>
   {% autoescape false %}
-    var hotels = {{ hotels | json }}
-    var thingsToDo = {{ thingsToDo | json }}
-    var restaurants = {{ restaurants | json }}
+
+    var data = {
+      hotel:{{ hotels | json }},
+      thingsToDo: {{ thingsToDo | json }},
+      restaurant: {{ restaurants | json }}
+    }
   {% endautoescape %}
 
-  var $hotelSelect = $("#hotelSelect");
+  var selectors = {}
 
-  hotels.forEach(function(hotel) {
-    $hotelSelect.append("<option>" + hotel.name + "</option>");
+  var types = ['hotel','thingsToDo','restaurant']
+  types.forEach(function(activityType) {
+    selectors[activityType] = $("#" + activityType + "Select");
+    data[activityType].forEach(function(activity) {
+      selectors[activityType].append("<option>" + activity.name + "</option>");
+    });
   });
+
+
+
+  $(".addToDay").on('click',function() {
+    var selector = $(this).attr('data-select');
+
+    var select = $(selector);
+    var value = select.val();
+
+    console.log('add to day called',value);
+
+  })
+
+
+
+  var days = [];
+
+  var currentDay;
+
+  var addDay = function() {
+    var newDay = {
+      dayNum: days.length + 1,
+      hotel: [],
+      thingsToDo: [],
+      restaurant: []
+    }
+    days.push(newDay);
+    var $btn = $("<button class='btn'>Day" + newDay.dayNum + "</button>");
+    $btn.on('click',function() {
+      currentDay = newDay;
+      renderDayPanel();
+      console.log(newDay.dayNum, "was clicked");
+    })
+    $("#daysContainer").append($btn)
+  }
+
+  addDay();
+
+  var renderDayPanel = function() {
+    $("#dayPanel").html("<pre><code>" + JSON.stringify(currentDay,null,4) + "</code></pre>");
+  };
+
+
+  $("#addDayBtn").on('click',function() {
+    addDay();
+  })
 
 </script>
 
