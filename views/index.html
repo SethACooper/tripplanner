@@ -91,6 +91,7 @@
   var selectors = {}
 
   var types = ['hotel','thingsToDo','restaurant']
+
   types.forEach(function(activityType) {
     selectors[activityType] = $("#" + activityType + "Select");
     data[activityType].forEach(function(activity) {
