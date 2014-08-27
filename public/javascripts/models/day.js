@@ -5,6 +5,17 @@ var Day = function() {
   this.dayNum = days.length + 1;
   this.dayView = new DayView(this);
   this.dayBtnView = new DayBtnView(this);
+
+  //save to the database
+  this.create();
+}
+
+Day.prototype.create = function() {
+  var self = this;
+  $.post("/days",{dayNum: this.dayNum}).done(function(serverDay) {
+    self._id = serverDay._id;
+    console.log(self)
+  });
 }
 
 Day.prototype.addActivity = function(type,id) {
